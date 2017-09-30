@@ -1,4 +1,4 @@
-package com.shaposhnikov.steganography;
+package com.shaposhnikov.steganography.ruen;
 
 import com.shaposhnikov.api.Decoder;
 
@@ -26,18 +26,20 @@ public class SteganographyDecoder implements Decoder {
             StringBuilder binaryString = new StringBuilder();
             List<Byte> byteList = new ArrayList<>();
             while ((tmpStr  = reader.readLine()) != null) {
-                if (tmpStr.charAt(tmpStr.length() - 1) == ' ') {
-                    binaryString.append('1');
-                } else {
-                    binaryString.append('0');
-                }
+                for (int i = 0; i < tmpStr.length(); i++) {
+                    if (iter == 32) {
+                        byteList.add((byte)Long.parseLong(binaryString.toString(), Character.MIN_RADIX));
+                        binaryString = new StringBuilder();
+                        iter = 0;
+                    }
 
-                if (iter == 31) {
-                    byteList.add((byte)Long.parseLong(binaryString.toString(), Character.MIN_RADIX));
-                    binaryString = new StringBuilder();
-                    iter = 0;
-                } else {
-                    iter++;
+                    if (Dictionary.symbolWasReplaced(tmpStr.charAt(i))) {
+                        binaryString.append('1');
+                        iter++;
+                    } else if (Dictionary.get(tmpStr.charAt(i)) != null) {
+                        binaryString.append('0');
+                        iter++;
+                    }
                 }
             }
             byte[] result = new byte[byteList.size()];

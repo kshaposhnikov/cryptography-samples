@@ -1,4 +1,4 @@
-package com.shaposhnikov.steganography;
+package com.shaposhnikov.steganography.ruen;
 
 import com.shaposhnikov.api.Coder;
 
@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 public class SteganographyCoder implements Coder {
-
     private final File container;
 
     public SteganographyCoder(File container) {
@@ -28,13 +27,25 @@ public class SteganographyCoder implements Coder {
             int iter = 0;
             StringBuilder result = new StringBuilder();
             while ((tmpStr = reader.readLine()) != null) {
-                if (iter < binaryString.length()) {
-                    if (binaryString.charAt(iter) == '1') {
-                        tmpStr += " ";
+                for (int i = 0; i < tmpStr.length(); i++) {
+                    Character replaceSymbol;
+                    if ((replaceSymbol = Dictionary.get(tmpStr.charAt(i))) != null) {
+                        if (iter < binaryString.length()) {
+                            if (binaryString.charAt(iter) == '1') {
+                                result.append(replaceSymbol);
+                                iter++;
+                            } else if (binaryString.charAt(iter) == '0') {
+                                result.append(tmpStr.charAt(i));
+                                iter++;
+                            }
+                        } else {
+                            result.append(tmpStr.charAt(i));
+                        }
+                    } else {
+                        result.append(tmpStr.charAt(i));
                     }
                 }
-                result.append(tmpStr).append("\n");
-                iter++;
+                result.append("\n");
             }
             reader.close();
             saveToFile(result.toString());
