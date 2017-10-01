@@ -11,6 +11,8 @@ public class Main {
             'Ш', 'Щ', 'Ъ', 'Ы', 'Ь', 'Э', 'Ю', 'Я'
     };
 
+    public static final char[][] TABLE = generateTable();
+
     public static void main(String[] args) {
         String text = "СОВАНАПНЕ";
         String key = "ШЕРЛОК";
@@ -20,20 +22,19 @@ public class Main {
     public static String encrypt(String text, String key) {
         char[] textChars = text.toCharArray();
         char[] keyChars = key.toCharArray();
-        char[][] table = generateTable();
         char[] result = new char[text.length()];
         for (int i = 0; i < textChars.length; i++) {
             int column = 0;
             int row  = 0;
             for (int j = 0; j < SIZE; j++) {
-                if (textChars[i] == table[0][j]) {
+                if (textChars[i] == TABLE[0][j]) {
                     column = j;
                 }
-                if (keyChars[i % keyChars.length] == table[j][0]) {
+                if (keyChars[i % keyChars.length] == TABLE[j][0]) {
                     row = j;
                 }
             }
-            result[i] = table[row][column];
+            result[i] = TABLE[row][column];
         }
 
         return new String(result);
@@ -42,24 +43,23 @@ public class Main {
     public static String decrypt(String text, String key) {
         char[] textChars = text.toCharArray();
         char[] keyChars = key.toCharArray();
-        char[][] table = generateTable();
         char[] result = new char[text.length()];
         for (int i = 0; i < textChars.length; i++) {
             int column = 0;
             int row  = 0;
             for (int j = 0; j < SIZE; j++) {
-                if (keyChars[i % keyChars.length] == table[j][0]) {
+                if (keyChars[i % keyChars.length] == TABLE[j][0]) {
                     row = j;
                 }
             }
 
             for (int j = 0; j < SIZE; j++) {
-                if (textChars[i] == table[row][j]) {
+                if (textChars[i] == TABLE[row][j]) {
                     column = j;
                 }
             }
 
-            result[i] = table[0][column];
+            result[i] = TABLE[0][column];
         }
 
         return new String(result);
@@ -78,10 +78,9 @@ public class Main {
     }
 
     public static void outtputTable() {
-        char[][] chars = generateTable();
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; j++) {
-                System.out.print(chars[i][j]);
+                System.out.print(TABLE[i][j]);
             }
             System.out.println();
         }
